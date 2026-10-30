@@ -14,7 +14,7 @@
 
   <header>
     <h1>Fujifilm X-T1 XPan Mask</h1>
-    <p class="lede">A small patch to the X-T1's firmware that switches its "HD Framing" 16:9 guidelines into a 65:24 panoramic mask in the viewfinder and on the LCD screen. This has been a fun project which has helped revive an older camera (from 2014) that was otherwise sitting around unused.</p>
+    <p class="lede">A small patch to the X-T1's firmware that switches its "HD Framing" 16:9 guidelines into a 65:24 panoramic mask, both in the viewfinder and on the LCD screen. This has been a fun project which has helped revive an older camera (from 2014) that was otherwise sitting around unused.</p>
   </header>
 
   <figure class="compare">
@@ -53,7 +53,7 @@
     <h2 id="risk-heading">Experimental. Use at your own risk.</h2>
     <ul>
       <li>This changes your camera's firmware. It has only been tested on my one X-T1 so far (which was running the latest v5.52 firmware)</li>
-      <li>A failed or interrupted update could leave the camera unusable, and it may not be repairable</li>
+      <li>A failed update could leave the camera unusable, and it may not be repairable</li>
       <li>It is provided as-is, with no warranty and no support</li>
       <li>This is an independent hobby project. It is not affiliated with or endorsed by Fujifilm</li>
     </ul>
@@ -61,7 +61,7 @@
 
   <section aria-labelledby="what-heading">
     <h2 id="what-heading">What it does</h2>
-    <p>The "HD framing" option under <code>Screen Set-Up → Framing Guideline → HD Framing</code> is switched from 16:9 to 65:24 (and is set to a full mask, rather than just being thin lines). No cropping occurs however, images (JPEG and RAW) are left untouched, and the chosen aspect ratio is not changed (it's best to ensure that 3:2 is selected, with "L" JPEGs).</p>
+    <p>The "HD framing" option under <code>Screen Set-Up → Framing Guideline → HD Framing</code> is switched from 16:9 to 65:24 (and is set to a full mask, rather than just being thin lines). No cropping occurs however, as this is just a compositional aid. Images (JPEG and RAW) are left as-is, and the chosen aspect ratio is not changed (it's best to ensure that 3:2 is selected, with "L" JPEGs).</p>
     <p>You'll want to crop the output images yourself when importing from the SD card.</p>
     <figure>
       <video controls playsinline preload="none" width="1280" height="720" poster="fuji-xt1-xpan-poster.jpg" aria-label="The back of an X-T1 as the Framing Guideline setting is switched to HD Framing, which masks the live view on the LCD screen to 65:24">
@@ -100,13 +100,13 @@
 
   <section aria-labelledby="undo-heading">
     <h2 id="undo-heading">Undo it</h2>
-    <p>Flash the unmodified official <code>FWUP0005.DAT</code> the same way (you might want to keep a copy of it somewhere safe).</p>
+    <p>Flash the unmodified official <code>FWUP0005.DAT</code> the same way (you might want to keep a copy of it, in case Fuji ever remove access to it from their downloads page).</p>
   </section>
 
   <section aria-labelledby="crop-heading">
     <h2 id="crop-heading">Cropping your photos</h2>
-    <p class="numbers">The camera still saves full 3:2 files. For an exact 65:24 frame, crop the 4896&#215;3264 image to <strong>4896&#215;1808</strong>.</p>
-    <p>On macOS, you can use <code>jpegtran</code> to crop a whole folder of 3:2 JPEGs without re-compressing them. Install it with <a href="https://brew.sh/">Homebrew</a> (<code>brew install jpeg-turbo</code>), then open a terminal in that folder and run this, which saves the crops to a new <code>cropped</code> folder and leaves the originals alone:</p>
+    <p class="numbers">The camera still saves full 3:2 files. For a 65:24 frame, crop the 4896&#215;3264 image to <strong>4896&#215;1808</strong>.</p>
+    <p>On macOS, you can use <code>jpegtran</code> to crop a whole folder of 3:2 JPEGs without re-compressing them. Install it with <a href="https://brew.sh/">Homebrew</a> (<code>brew install jpeg-turbo</code>), then open a terminal in that folder and run this, which saves the crops to a new <code>cropped</code> folder:</p>
     <div class="cmd-row">
       <pre>mkdir -p cropped &amp;&amp; for f in *.[Jj][Pp]*[Gg]; do jpegtran -crop 4896x1808+0+728 -copy all -outfile "cropped/$f" "$f"; done</pre>
       <button class="copy" type="button" aria-label="Copy crop command">Copy</button>
@@ -115,7 +115,7 @@
 
   <section aria-labelledby="feedback-heading">
     <h2 id="feedback-heading">Feedback</h2>
-    <p><a href="https://github.com/grega/xt1-xpan/issues">Open an issue on the GitHub repo</a> (note: no support provided).</p>
+    <p><a href="https://github.com/grega/xt1-xpan/issues">Open an issue on the GitHub repository</a> (note: no support is provided).</p>
   </section>
 
   <footer>
