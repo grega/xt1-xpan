@@ -76,12 +76,14 @@
     <p>Make sure you have <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">Python 3</a> installed on your system, and that your X-T1 is already running the official firmware 5.52.</p>
     <ol>
       <li>Download the <a href="https://www.fujifilm-x.com/en-gb/support/download/firmware/cameras/x-t1/">official X-T1 firmware 5.52</a> (<code>FWUP0005.DAT</code>) from Fujifilm</li>
-      <li>Download the patch kit, unzip it, and move <code>FWUP0005.DAT</code> into the unzipped <code>xt1-xpan-mask-kit</code> folder:
+      <li>Download the patch kit, unzip it, and move <code>FWUP0005.DAT</code> into the unzipped <code class="nowrap">xt1-xpan-mask-kit</code> folder:
         <a class="download" href="xt1-xpan-mask-kit.zip">Download the patch kit <small>zip &middot; 4 KB</small></a>
       </li>
       <li>Open a terminal in that folder and run the patcher (it'll refuse to write anything unless your file is the 5.52 file):
-        <pre id="cmd">python3 patch_dat.py FWUP0005.DAT out/FWUP0005.DAT xpan-mask.patch</pre>
-        <button class="copy" id="copy-cmd" type="button" aria-label="Copy command">Copy</button>
+        <div class="cmd-row">
+          <pre id="cmd">python3 patch_dat.py FWUP0005.DAT out/FWUP0005.DAT xpan-mask.patch</pre>
+          <button class="copy" id="copy-cmd" type="button" aria-label="Copy command">Copy</button>
+        </div>
       </li>
       <li>Copy <code>out/FWUP0005.DAT</code> to the root of a freshly formatted SD card</li>
       <li>Make sure your battery is fully charged, set <code>Screen Set-Up → Framing Guideline → Grid 9</code>, and set <code>Image Size → L 3:2</code></li>
@@ -104,6 +106,11 @@
   <section aria-labelledby="crop-heading">
     <h2 id="crop-heading">Cropping your photos</h2>
     <p class="numbers">The camera still saves full 3:2 files. For an exact 65:24 frame, crop the 4896&#215;3264 image to <strong>4896&#215;1808</strong>.</p>
+  </section>
+
+  <section aria-labelledby="feedback-heading">
+    <h2 id="feedback-heading">Feedback</h2>
+    <p><a href="https://github.com/grega/xt1-xpan/issues">Open an issue on the GitHub repo</a> (note: no support provided).</p>
   </section>
 
   <footer>
