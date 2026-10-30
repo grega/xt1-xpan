@@ -10,7 +10,7 @@ camera. A bad flash could leave your camera unusable. Not affiliated with or
 endorsed by Fujifilm. No warranty of any kind.
 
 You need
-  - A Fujifilm X-T1
+  - A Fujifilm X-T1 (already running the official firmware 5.52)
   - The official X-T1 firmware 5.52 file (FWUP0005.DAT) from Fujifilm
   - Python 3
   - An SD card and a fully charged battery
@@ -33,3 +33,7 @@ Install
 
 Undo
   Flash the unmodified official FWUP0005.DAT the same way.
+
+Feedback
+  https://github.com/grega/xt1-xpan/issues
+  Note: no support provided
