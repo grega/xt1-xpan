@@ -14,7 +14,7 @@
 
   <header>
     <h1>Fujifilm X-T1 XPan Mask</h1>
-    <p class="lede">A small patch to the X-T1's firmware that switches its "HD Framing" 16:9 guidelines into a 65:24 panoramic mask in the viewfinder and on the LCD screen.</p>
+    <p class="lede">A small patch to the X-T1's firmware that switches its "HD Framing" 16:9 guidelines into a 65:24 panoramic mask in the viewfinder and on the LCD screen. This has been a fun project which has helped revive a old camera (from 2014) that was otherwise sitting around unused.</p>
   </header>
 
   <figure class="compare">
@@ -81,8 +81,8 @@
       </li>
       <li>Open a terminal in that folder and run the patcher (it'll refuse to write anything unless your file is the 5.52 file):
         <div class="cmd-row">
-          <pre id="cmd">python3 patch_dat.py FWUP0005.DAT out/FWUP0005.DAT xpan-mask.patch</pre>
-          <button class="copy" id="copy-cmd" type="button" aria-label="Copy command">Copy</button>
+          <pre>python3 patch_dat.py FWUP0005.DAT out/FWUP0005.DAT xpan-mask.patch</pre>
+          <button class="copy" type="button" aria-label="Copy patch command">Copy</button>
         </div>
       </li>
       <li>Copy <code>out/FWUP0005.DAT</code> to the root of a freshly formatted SD card</li>
@@ -106,6 +106,11 @@
   <section aria-labelledby="crop-heading">
     <h2 id="crop-heading">Cropping your photos</h2>
     <p class="numbers">The camera still saves full 3:2 files. For an exact 65:24 frame, crop the 4896&#215;3264 image to <strong>4896&#215;1808</strong>.</p>
+    <p>On macOS, you can use <code>jpegtran</code> to crop a whole folder of 3:2 JPEGs without re-compressing them. Install it with <a href="https://brew.sh/">Homebrew</a> (<code>brew install jpeg-turbo</code>), then open a terminal in that folder and run this, which saves the crops to a new <code>cropped</code> folder and leaves the originals alone:</p>
+    <div class="cmd-row">
+      <pre>mkdir -p cropped &amp;&amp; for f in *.[Jj][Pp]*[Gg]; do jpegtran -crop 4896x1808+0+728 -copy all -outfile "cropped/$f" "$f"; done</pre>
+      <button class="copy" type="button" aria-label="Copy crop command">Copy</button>
+    </div>
   </section>
 
   <section aria-labelledby="feedback-heading">
@@ -121,22 +126,24 @@
 </main>
 <script>
 (function () {
-  var btn = document.getElementById('copy-cmd');
-  var pre = document.getElementById('cmd');
-  function selectText() {
+  function selectText(pre) {
     var range = document.createRange();
     range.selectNodeContents(pre);
     var sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
   }
-  btn.addEventListener('click', function () {
-    var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(pre.textContent).then(done, selectText);
-    } else {
-      selectText();
-    }
+  document.querySelectorAll('button.copy').forEach(function (btn) {
+    var pre = btn.previousElementSibling;
+    btn.addEventListener('click', function () {
+      var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); };
+      var fail = function () { selectText(pre); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(pre.textContent).then(done, fail);
+      } else {
+        fail();
+      }
+    });
   });
 })();
 </script>
