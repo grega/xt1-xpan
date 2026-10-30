@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 222" width="1224" height="444" role="img" aria-labelledby="t">
+  <title id="t">Before and after: a 3:2 viewfinder view with thin 16:9 guidelines, then the same view with black bars above and below a 65:24 panoramic window</title>
+  <style>
+    :root { --sky-top: #9cc1cf; --sky-low: #eadbbd; --hill-far: #8aa293; --hill: #4f6b5a; --screen: #030404; --muted: #566065; }
+    @media (prefers-color-scheme: dark) {
+      :root { --sky-top: #2e4a59; --sky-low: #7b6a4f; --hill-far: #475b4f; --hill: #2b3c32; --screen: #000000; --muted: #9aa3a7; }
+    }
+    .sky-top { stop-color: var(--sky-top); }
+    .sky-low { stop-color: var(--sky-low); }
+    .hill-far { fill: var(--hill-far); }
+    .hill { fill: var(--hill); }
+    .bar { fill: var(--screen); }
+    .label { fill: var(--muted); font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }
+  </style>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" class="sky-top"/>
+      <stop offset="1" class="sky-low"/>
+    </linearGradient>
+    <g id="scene">
+      <rect x="0" y="0" width="300" height="200" fill="url(#sky)"/>
+      <path class="hill-far" d="M0 122 C40 104 70 112 105 100 C140 88 170 106 205 96 C240 86 270 98 300 92 L300 200 L0 200 Z"/>
+      <path class="hill" d="M0 140 C50 126 90 138 140 124 C190 110 230 132 300 120 L300 200 L0 200 Z"/>
+    </g>
+  </defs>
+  <use href="#scene"/>
+  <rect class="bar" x="0" y="14.6" width="300" height="2"/>
+  <rect class="bar" x="0" y="183.4" width="300" height="2"/>
+  <text class="label" x="0" y="218">Before: 16:9 lines</text>
+  <g transform="translate(312 0)">
+    <use href="#scene"/>
+    <rect class="bar" x="0" y="0" width="300" height="44.6"/>
+    <rect class="bar" x="0" y="155.4" width="300" height="44.6"/>
+    <text class="label" x="0" y="218">After: 65:24 mask</text>
+  </g>
+</svg>

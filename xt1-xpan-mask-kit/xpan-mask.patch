@@ -1,0 +1,36 @@
+# X-T1 XPan mask. Turns the HD Framing guideline into a 65:24 mask in the EVF and LCD.
+# For firmware 5.52 only.
+sha256-in  4cf56ba6abb4298a844422c016289228bb0acce0a2ae2c6755c05fffb38e92db
+sha256-out f4ba1f041f795e30617443c15d964d862d1195a79acce622c94d8f38784c700b
+# address, old, new, instruction comment
+019a2c50  0222a0e1  8224a0e1   # mov  r2,r2,lsl #9          ; 512*(y0+y1+1)
+019a2c5c  833183e0  833083e0   # add  r3,r3,r3,lsl #1       ; -3w
+019a2c60  033082e0  033363e0   # rsb  r3,r3,r3,lsl #6       ; -189w
+019a2c64  1f0083e2  033082e0   # add  r3,r2,r3
+019a2c6c  0030a0b1  0030a0b3   # movlt r3,#0                ; clamp negative
+019a2c70  d332efe7  5335efe7   # ubfx r3,r3,#10,#16         ; top
+019a2c7c  811181e0  811081e0   # add  r1,r1,r1,lsl #1       ; 3w
+019a2c80  012082e0  011361e0   # rsb  r1,r1,r1,lsl #6       ; 189w
+019a2c84  1f3082e2  012082e0   # add  r2,r2,r1
+019a2c8c  0320a0b1  0020a0b3   # movlt r2,#0                ; clamp negative
+019a2c90  d222efe7  5225efe7   # ubfx r2,r2,#10,#16         ; bottom
+019a2fbc  a8101be5  f86a5be1   # ldrsh r6,[r11,#-0xa8]      ; x0
+019a2fc0  7160bfe6  a4501be5   # ldr  r5,[r11,#-0xa4]       ; w
+019a2fc4  a4201be5  055086e0   # add  r5,r6,r5              ; x end
+019a2fc8  7250bfe6  1240a0e3   # mov  r4,#0x12              ; layer
+019a2fcc  dd4200e3  0070a0e3   # mov  r7,#0x0               ; colour 0 (black)
+019a2fd0  004f4fe3  ff90a0e3   # mov  r9,#0xff              ; opacity
+019a2fd4  00408de5  90028de8   # stmia sp,{r4,r7,r9}
+019a2fd8  0600a0e1  0600a0e1   # cpy  r0,r6
+019a2fdc  b4301be5  0a10a0e1   # cpy  r1,r10                ; y0
+019a2fe0  7310bfe6  0520a0e1   # cpy  r2,r5
+019a2fe4  0520a0e1  b4301be5   # ldr  r3,[r11,#-0xb4]       ; top
+019a2fe8  1830a0e3  013043e2   # sub  r3,r3,#0x1
+019a2fec  2350ffeb  dd4effeb   # bl   FUN_01976b68           ; top bar
+019a2ff0  00408de5  90028de8   # stmia sp,{r4,r7,r9}
+019a2ff4  0600a0e1  0600a0e1   # cpy  r0,r6
+019a2ff8  b8c01be5  b8101be5   # ldr  r1,[r11,#-0xb8]       ; bottom
+019a2ffc  7c10bfe6  0520a0e1   # cpy  r2,r5
+019a3000  0520a0e1  08308ae0   # add  r3,r10,r8             ; y0 + h
+019a3004  1830a0e3  013043e2   # sub  r3,r3,#0x1
+019a3008  1c50ffeb  d64effeb   # bl   FUN_01976b68           ; bottom bar

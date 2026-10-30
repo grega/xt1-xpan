@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>X-T1 XPan Mask</title>
+<meta name="description" content="An experimental firmware patch that turns the Fujifilm X-T1's HD Framing guideline into a 65:24 XPan mask in the viewfinder and LCD screen.">
+<script defer data-domain="xt1-xpan.gregdev.com" src="https://analytics.gregdev.com/js/script.file-downloads.hash.outbound-links.tagged-events.js"></script>
+<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+<style>
+:root {
+  --bg: #f1f3f1;
+  --surface: #e4e9e6;
+  --ink: #14181a;
+  --muted: #566065;
+  --rule: #cdd3cf;
+  --accent: #0d6d68;
+  --warn-bg: #fbefd6;
+  --warn-ink: #5c3600;
+  --warn-edge: #c27c12;
+  --sky-top: #9cc1cf;
+  --sky-low: #eadbbd;
+  --hill-far: #8aa293;
+  --hill: #4f6b5a;
+  --screen: #030404;
+  --on-screen: #dfe5e2;
+  --display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101315; --surface: #182023; --ink: #e6eae7; --muted: #9aa3a7; --rule: #2a3236;
+    --accent: #5ec3bb; --warn-bg: #2a2112; --warn-ink: #f1d29b; --warn-edge: #b77d24;
+    --sky-top: #2e4a59; --sky-low: #7b6a4f; --hill-far: #475b4f; --hill: #2b3c32;
+    --screen: #000000; --on-screen: #dfe5e2;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101315; --surface: #182023; --ink: #e6eae7; --muted: #9aa3a7; --rule: #2a3236;
+  --accent: #5ec3bb; --warn-bg: #2a2112; --warn-ink: #f1d29b; --warn-edge: #b77d24;
+  --sky-top: #2e4a59; --sky-low: #7b6a4f; --hill-far: #475b4f; --hill: #2b3c32;
+  --screen: #000000; --on-screen: #dfe5e2;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: max(40px, env(safe-area-inset-top, 0px)) max(48px, env(safe-area-inset-bottom, 0px));
+}
+.page { max-width: 42rem; margin: 0 auto; display: grid; gap: 2.5rem; }
+header { display: grid; gap: 0.9rem; }
+.eyebrow {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); margin: 0;
+}
+h1, h2 {
+  font-family: var(--display); font-weight: 750; line-height: 1.1;
+  text-wrap: balance; margin: 0; letter-spacing: -0.01em;
+}
+h1 { font-size: clamp(2rem, 6vw, 2.9rem); }
+h2 { font-size: 1.3rem; }
+h3 { margin-bottom: 0; }
+p { margin: 0; }
+.lede { font-size: 1.2rem; color: var(--ink); }
+a { color: var(--accent); text-underline-offset: 0.18em; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+figure { margin: 0; display: grid; gap: 0.6rem; }
+figure svg, figure video { width: 100%; height: auto; max-width: 100%; display: block; border-radius: 4px; }
+figcaption { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
+.compare { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.compare figure { align-content: start; }
+
+section { display: grid; gap: 0.9rem; }
+ul, ol { margin: 0; padding-left: 1.3rem; display: grid; gap: 0.45rem; }
+li { padding-left: 0.2rem; min-width: 0; }
+
+.warning {
+  background: var(--warn-bg); color: var(--warn-ink);
+  border: 1px solid var(--warn-edge); border-radius: 6px;
+  padding: 1.1rem 1.25rem; display: grid; gap: 0.7rem;
+}
+.warning h2 { font-size: 1.15rem; color: var(--warn-ink); }
+
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+.facts div { display: grid; gap: 0.4rem; align-content: start; }
+.label {
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+}
+
+.download {
+  justify-self: start; display: inline-flex; align-items: center; gap: 0.6rem;
+  font-family: var(--display); font-weight: 650; font-size: 1rem;
+  background: var(--ink); color: var(--bg); text-decoration: none;
+  padding: 0.7rem 1.1rem; border-radius: 6px; margin-top: 0.5rem;
+}
+.download small { font-family: var(--mono); font-weight: 400; font-size: 0.75rem; opacity: 0.75; }
+
+.cmd { display: grid; gap: 0.4rem; }
+.cmd-row { display: flex; gap: 0.5rem; align-items: stretch; min-width: 0; }
+pre {
+  margin: 0; flex: 1; min-width: 0; overflow-x: auto;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 0.75rem 0.9rem; font-family: var(--mono); font-size: 0.85rem; line-height: 1.5;
+}
+button.copy {
+  font-family: var(--mono); font-size: 0.8rem; color: var(--ink);
+  background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 0 0.8rem; cursor: pointer;
+}
+button.copy:hover { border-color: var(--accent); }
+
+dl.hashes { margin: 0; display: grid; gap: 0.5rem; }
+dl.hashes div { display: grid; gap: 0.15rem; min-width: 0; }
+dl.hashes dt { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+dl.hashes dd { margin: 0; font-family: var(--mono); font-size: 0.8rem; overflow-wrap: anywhere; }
+
+code { font-family: var(--mono); font-size: 0.9em; }
+.numbers { font-variant-numeric: tabular-nums; }
+
+footer {
+  border-top: 1px solid var(--rule); padding-top: 1.25rem; display: grid; gap: 0.5rem;
+  font-size: 0.9rem; color: var(--muted);
+}
+</style>
+</head>
+<body>
+<main class="page">
+
+  <header>
+    <h1>Fujifilm X-T1 XPan Mask</h1>
+    <p class="lede">A small patch to the X-T1's firmware that switches its "HD Framing" 16:9 guidelines into a 65:24 panoramic mask in the viewfinder and on the LCD screen.</p>
+  </header>
+
+  <figure class="compare">
+    <figure>
+      <svg viewBox="0 0 300 200" role="img" aria-labelledby="fig-before-title">
+        <title id="fig-before-title">A 3:2 viewfinder view with thin 16:9 guidelines near the top and bottom</title>
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" style="stop-color: var(--sky-top)"/>
+            <stop offset="1" style="stop-color: var(--sky-low)"/>
+          </linearGradient>
+          <g id="scene">
+            <rect x="0" y="0" width="300" height="200" fill="url(#sky)"/>
+            <path d="M0 122 C40 104 70 112 105 100 C140 88 170 106 205 96 C240 86 270 98 300 92 L300 200 L0 200 Z" style="fill: var(--hill-far)"/>
+            <path d="M0 140 C50 126 90 138 140 124 C190 110 230 132 300 120 L300 200 L0 200 Z" style="fill: var(--hill)"/>
+          </g>
+        </defs>
+        <use href="#scene"/>
+        <rect x="0" y="14.6" width="300" height="2" style="fill: var(--screen)"/>
+        <rect x="0" y="183.4" width="300" height="2" style="fill: var(--screen)"/>
+      </svg>
+      <figcaption>Before: 16:9 lines</figcaption>
+    </figure>
+    <figure>
+      <svg viewBox="0 0 300 200" role="img" aria-labelledby="fig-after-title">
+        <title id="fig-after-title">The same view with black bars above and below a 65:24 panoramic window</title>
+        <use href="#scene"/>
+        <rect x="0" y="0" width="300" height="44.6" style="fill: var(--screen)"/>
+        <rect x="0" y="155.4" width="300" height="44.6" style="fill: var(--screen)"/>
+      </svg>
+      <figcaption>After: 65:24 mask</figcaption>
+    </figure>
+  </figure>
+
+  <aside class="warning" role="note" aria-labelledby="risk-heading">
+    <h2 id="risk-heading">Experimental. Use at your own risk.</h2>
+    <ul>
+      <li>This changes your camera's firmware. It has only been tested on my one X-T1 so far (which was running the latest v5.52 firmware)</li>
+      <li>A failed or interrupted update could leave the camera unusable, and it may not be repairable</li>
+      <li>It is provided as-is, with no warranty and no support</li>
+      <li>This is an independent hobby project. It is not affiliated with or endorsed by Fujifilm</li>
+    </ul>
+  </aside>
+
+  <section aria-labelledby="what-heading">
+    <h2 id="what-heading">What it does</h2>
+    <p>The "HD framing" option under <code>Screen Set-Up → Framing Guideline → HD Framing</code> is switched from 16:9 to 65:24 (and is set to a full mask, rather than just being thin lines). No cropping occurs however, images (JPEG and RAW) are left untouched, and the chosen aspect ratio is not changed (it's best to ensure that 3:2 is selected, with "L" JPEGs).</p>
+    <p>You'll want to crop the output images yourself when importing from the SD card.</p>
+    <figure>
+      <video controls playsinline preload="none" width="1280" height="720" poster="fuji-xt1-xpan-poster.jpg" aria-label="The back of an X-T1 as the Framing Guideline setting is switched to HD Framing, which masks the live view on the LCD screen to 65:24">
+        <source src="fuji-xt1-xpan.mp4" type="video/mp4">
+        <a href="fuji-xt1-xpan.mp4">Download the video</a>
+      </video>
+    </figure>
+  </section>
+
+  <section aria-labelledby="try-heading">
+    <h2 id="try-heading">Try it</h2>
+    <p>Make sure you have <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">Python 3</a> installed on your system.</p>
+    <ol>
+      <li>Download the <a href="https://www.fujifilm-x.com/en-gb/support/download/firmware/cameras/x-t1/">official X-T1 firmware 5.52</a> (<code>FWUP0005.DAT</code>) from Fujifilm</li>
+      <li>Download the patch kit and unzip it next to that file:
+        <a class="download" href="xt1-xpan-mask-kit.zip">Download the patch kit <small>zip &middot; 4 KB</small></a>
+      </li>
+      <li>Run the patcher (it'll refuse to write anything unless your file is the 5.52 file):
+        <pre id="cmd">python3 patch_dat.py FWUP0005.DAT out/FWUP0005.DAT xpan-mask.patch</pre>
+        <button class="copy" id="copy-cmd" type="button" aria-label="Copy command">Copy</button>
+      </li>
+      <li>Copy <code>out/FWUP0005.DAT</code> to the root of a freshly formatted SD card</li>
+      <li>Make sure your battery is fully charged, set <code>Screen Set-Up → Framing Guideline → Grid 9</code>, and set <code>Image Size → L 3:2</code></li>
+      <li>Update the camera the way Fujifilm's own firmware instructions describe (eg. holding DISP / BACK and powering it on)</li>
+      <li>Set the <code>Screen Set-Up → Framing Guideline → HD Framing</code> guideline, you should now see the "XPan" crop in your viewfinder and LCD screen</li>
+    </ol>
+    
+    <h3>File hashes</h3>
+    <dl class="hashes">
+      <div><dt>Official 5.52 file (SHA-256)</dt><dd>4cf56ba6abb4298a844422c016289228bb0acce0a2ae2c6755c05fffb38e92db</dd></div>
+      <div><dt>Patched file (SHA-256)</dt><dd>f4ba1f041f795e30617443c15d964d862d1195a79acce622c94d8f38784c700b</dd></div>
+    </dl>
+  </section>
+
+  <section aria-labelledby="undo-heading">
+    <h2 id="undo-heading">Undo it</h2>
+    <p>Flash the unmodified official <code>FWUP0005.DAT</code> the same way (you might want to keep a copy of it somewhere safe).</p>
+  </section>
+
+  <section aria-labelledby="crop-heading">
+    <h2 id="crop-heading">Cropping your photos</h2>
+    <p class="numbers">The camera still saves full 3:2 files. For an exact 65:24 frame, crop the 4896&#215;3264 image to <strong>4896&#215;1808</strong>.</p>
+  </section>
+
+  <footer>
+    <p>An independent, unofficial project. Not affiliated with or endorsed by Fujifilm or Hasselblad. Fujifilm and X-T1 are trademarks of FUJIFILM Corporation. Hasselblad and XPan are trademarks of Victor Hasselblad AB.</p>
+    <p>Provided as-is, without warranty of any kind.</p>
+  </footer>
+
+</main>
+<script>
+(function () {
+  var btn = document.getElementById('copy-cmd');
+  var pre = document.getElementById('cmd');
+  function selectText() {
+    var range = document.createRange();
+    range.selectNodeContents(pre);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+  btn.addEventListener('click', function () {
+    var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(pre.textContent).then(done, selectText);
+    } else {
+      selectText();
+    }
+  });
+})();
+</script>
+</body>
+</html>
