@@ -16,6 +16,8 @@ You need
   - An SD card and a fully charged battery
 
 Make the patched file
+  Move FWUP0005.DAT into this folder, open a terminal here, and run:
+
   python3 patch_dat.py FWUP0005.DAT out/FWUP0005.DAT xpan-mask.patch
 
   The script refuses to write anything unless your input file is exactly the
